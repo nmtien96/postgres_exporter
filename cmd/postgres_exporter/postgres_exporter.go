@@ -1386,12 +1386,14 @@ func queryNamespaceMappings(ch chan<- prometheus.Metric, server *Server) map[str
 // Check and update the exporters query maps if the version has changed.
 func (e *Exporter) checkMapVersions(ch chan<- prometheus.Metric, server *Server) error {
 	log.Debugf("Querying Postgres Version on %q", server)
-	versionRow := server.db.QueryRow("SELECT version();")
+	// versionRow := server.db.QueryRow("SELECT version();")
 	var versionString string
-	err := versionRow.Scan(&versionString)
-	if err != nil {
-		return fmt.Errorf("Error scanning version string on %q: %v", server, err)
-	}
+	// err := versionRow.Scan(&versionString)
+	// if err != nil {
+	// 	return fmt.Errorf("Error scanning version string on %q: %v", server, err)
+	// }
+	// Ignore query "SELECT version();" to bypass 'versionRow' and 'err' variable above - https://github.com/nmtien96
+	versionString = "PostgreSQL 12.0.0 . This is fake postgres version to bypass 'versionRow' and 'err' variable above."
 	semanticVersion, err := parseVersion(versionString)
 	if err != nil {
 		return fmt.Errorf("Error parsing version string on %q: %v", server, err)
